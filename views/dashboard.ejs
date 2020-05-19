@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome <%= username %>!</h1>
+    <a href="/users/logout">
+        <button>Logout</button>
+    </a>
+    <hr>
+    <h3>Update Account</h3>
+    <form>
+        <strong id="updatesBox"></strong>
+        <input type="text" name="username" placeholder="username">
+        <input type="password" name="password" placeholder="password">
+        <button type="submit">Update</button>
+    </form>
+    <hr>
+    <h3>For Admins</h3>
+    <% if (users) { %>
+        <table>
+            <thead>
+                <tr>
+                    <% for (heading in users[0]) { %>
+                        <th><%= heading %></th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (user of users) { %>
+                    <tr>
+                        <% for (field in user) { %>
+                            <td><%= user[field] %></td>
+                        <% } %>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    <% } %>
+    <a href="/users/">
+        <button>Show All Accounts</button>
+    </a>
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const response = await fetch('/users/', {
+                method: 'PATCH',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'pseudorandom': document.cookie.slice(document.cookie.lastIndexOf('=') + 1)
+                },
+                body: JSON.stringify({
+                    username: form.username.value ? form.username.value : undefined,
+                    password: form.password.value ? form.password.value : undefined
+                })
+            });
+            if (form.username.value || form.password.value) {
+                document.getElementById('updatesBox').innerHTML = 'Updates Are Taken.<br>';
+            }
+        });
+    </script>
+</body>
+</html>

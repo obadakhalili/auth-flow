@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <form action="/users" method="POST">
+        <h1>Register <a href="/">Login</a></h1>
+        <% if (errors) { %>
+            <ul>
+                <% for (let error of errors) { %>
+                    <li><%= error %></li>
+                <% } %>
+            </ul>
+        <% } %>
+        <input type="text" name="username" placeholder="username">
+        <input type="password" name="password" placeholder="password">
+        <label>Admin</label>
+        <input type="checkbox" name="admin">
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
