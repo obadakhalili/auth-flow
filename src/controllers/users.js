@@ -57,23 +57,29 @@ exports.signup = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        for (let update in req.body) {
-            if (['username', 'password'].includes(update)) {
-                req.user[update] = req.body[update];
+        if (req.headers.pseudorandom == req.cookies.pseudorandom) {
+            for (let update in req.body) {
+                if (['username', 'password'].includes(update)) {
+                    req.user[update] = req.body[update];
+                }
             }
+            await req.user.save();
+            res.end();
+        } else {
+            throw 401;
         }
-        await req.user.save();
-        res.end();
     } catch (e) {
         const errors = [];
-        if (e.code == 11000) {
+        if (e == 401) {
+            errors.push('Anauthenticated');
+        } else if (e.code == 11000) {
             errors.push('Username already exists. Use different Username.');
         } else {
             for (let error in e.errors) {
                 errors.push(e.errors[error].message);
             }
         }
-        res.status(400).json({ errors });
+        res.status(e == 401 ? e : 400).json(errors);
     }
 };
 

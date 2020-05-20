@@ -59,8 +59,13 @@
                     password: form.password.value ? form.password.value : undefined
                 })
             });
-            if (form.username.value || form.password.value) {
-                document.getElementById('updatesBox').innerHTML = 'Updates Are Taken.<br>';
+            if (response.status !== 200) {
+                document.getElementById('updatesBox').innerHTML = (await response.json()).reduce((acc, err) => acc + `<li>${err}.</li>`,'');
+            } else if (response.status == 200) {
+                document.getElementById('updatesBox').innerHTML = '';
+                if (form.username.value || form.password.value) {
+                    document.getElementById('updatesBox').innerHTML = 'Updates are taken.<br>';    
+                }
             }
         });
     </script>
